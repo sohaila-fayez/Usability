@@ -19,7 +19,7 @@ st.subheader("Quality of Life Analyse mit Numbeo-Daten")
 # --------------------------------
 # CSV-Datei laden
 # --------------------------------
-df = pd.read_csv("zquality_of_life.csv")
+df = pd.read_csv("quality_of_life.csv")
 
 # --------------------------------
 # Daten anzeigen
