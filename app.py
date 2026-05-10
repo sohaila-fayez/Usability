@@ -13,8 +13,8 @@ st.set_page_config(
 # --------------------------------
 # Titel
 # --------------------------------
-st.title("🌍 Städte-Ranking Dashboard")
-st.subheader("Quality of Life Analyse mit Numbeo-Daten")
+st.title("🌍 Länder-Ranking Dashboard")
+st.subheader("Quality of Life Analyse")
 
 # --------------------------------
 # CSV-Datei laden
@@ -43,9 +43,9 @@ selected_year = st.sidebar.selectbox(
 filtered_df = df[df["Year"] == selected_year]
 
 # --------------------------------
-# Top 10 Städte nach Lebensqualität
+# Top 10 Länder nach Lebensqualität
 # --------------------------------
-st.header("🏆 Top Städte nach Quality of Life")
+st.header("🏆 Top Länder nach Quality of Life")
 
 top10 = filtered_df.sort_values(
     by="Quality of Life Index",
@@ -57,7 +57,7 @@ fig_bar = px.bar(
     x="Country",
     y="Quality of Life Index",
     color="Quality of Life Index",
-    title="Top 10 Städte"
+    title="Top 10 Länder"
 )
 
 st.plotly_chart(fig_bar, use_container_width=True)
