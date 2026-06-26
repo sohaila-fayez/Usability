@@ -831,7 +831,7 @@ if not st.session_state.selected_countries_state:
 
 MAX_COMPARE_COUNTRIES = 8
 
-with st.sidebar.popover("Select countries to compare", use_container_width=True):
+with st.sidebar.popover("Select the countries to compare", use_container_width=True):
     st.caption(f"Select up to {MAX_COMPARE_COUNTRIES} countries to compare.")
 
     pop_c1, pop_c2 = st.columns(2)
