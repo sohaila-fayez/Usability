@@ -941,7 +941,7 @@ st.markdown(
 )
 
 st.markdown("""
-<h1 class='app-title' id='main-content'><i class='bi bi-globe-asia-australia' style='font-size:35px;vertical-align:middle;margin-right:3px;background:linear-gradient(135deg,#003366,#A4D65E);-webkit-background-clip:text;-webkit-text-fill-color:transparent'></i>Quality of Life Across Countries</h1>
+<h1 class='app-title' id='main-content'><i class='bi bi-globe-asia-australia' style='font-size:35px;vertical-align:middle;margin-right:6px;background:linear-gradient(135deg,#003366,#A4D65E);-webkit-background-clip:text;-webkit-text-fill-color:transparent'></i>Quality of Life Across Countries</h1>
 """, unsafe_allow_html=True)
 st.markdown(
     "<p class='app-subtitle'>Explore how countries compare in quality of life, safety, health care, affordability, climate and environmental conditions.</p>",
