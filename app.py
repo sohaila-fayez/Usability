@@ -1478,28 +1478,43 @@ elif selected == "Explore Drivers":
 
     chart_alt_text("Scatter plot", f"Relationship between {ui_label(x_axis)} and {ui_label(y_axis)}")
 
+    scatter_scale = [[0, "#B3D4F0"], [0.3, "#6AAED6"], [0.55, "#005B99"], [0.8, "#003366"], [1, "#001F3F"]]
+
     fig_scatter = px.scatter(
         df_year,
         x=x_axis,
         y=y_axis,
         hover_name="Country",
         color="Quality of Life Index",
-        color_continuous_scale="Viridis",
+        color_continuous_scale=scatter_scale,
         trendline="ols",
         hover_data={col: ':.2f' for col in INDICES},
         **scatter_kwargs
     )
 
+    fig_scatter.update_traces(
+        marker=dict(line=dict(width=1, color="#ffffff")),
+        selector=dict(mode="markers")
+    )
+    fig_scatter.update_traces(
+        line=dict(color="#4B8B3B", width=2.5, dash="dash"),
+        selector=dict(mode="lines")
+    )
     fig_scatter.update_layout(
         height=520,
         xaxis_title=f"{ui_label(x_axis)} ({direction_arrow(x_axis)})",
         yaxis_title=f"{ui_label(y_axis)} ({direction_arrow(y_axis)})",
-        margin=dict(l=10, r=10, t=20, b=10)
+        margin=dict(l=10, r=10, t=20, b=10),
+        plot_bgcolor="#FAFBFC",
+        paper_bgcolor="#FAFBFC",
+        xaxis=dict(gridcolor="#EAEDED"),
+        yaxis=dict(gridcolor="#EAEDED"),
+        coloraxis_colorbar=dict(title="QoL", thickness=12)
     )
     st.plotly_chart(fig_scatter, use_container_width=True)
 
     st.caption(
-        f"Hover over points to inspect countries. {ui_label(x_axis)} vs. {ui_label(y_axis)}."
+        f"Each dot is a country — darker blue means higher Quality of Life. The dashed green trend line shows the overall direction between {ui_label(x_axis)} and {ui_label(y_axis)}. Hover over any point for details."
     )
 
     if x_axis != y_axis:
