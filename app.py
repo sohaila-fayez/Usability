@@ -806,7 +806,23 @@ st.sidebar.markdown(
 )
 
 years = sorted(df["Year"].dropna().unique())
-selected_year = st.sidebar.selectbox("Select Year", years, index=len(years)-1)
+
+if st.session_state.get("_bulk_reset"):
+    st.session_state.sel_year = years[-1]
+    st.session_state.sel_index = INDICES[0]
+    st.session_state.sel_topn = 15
+    st.session_state.sel_bottom = True
+    _reset_year_df = df[df["Year"] == years[-1]]
+    _reset_countries = sorted(_reset_year_df["Country"].dropna().unique())
+    _reset_defaults = [c for c in ["Germany", "Switzerland", "Netherlands", "Denmark", "Austria"] if c in _reset_countries]
+    if not _reset_defaults:
+        _reset_defaults = _reset_countries[:4]
+    st.session_state.selected_countries_state = _reset_defaults.copy()
+    for c in _reset_countries:
+        st.session_state[f"country_chk_{c}"] = c in _reset_defaults
+    st.session_state._bulk_reset = False
+
+selected_year = st.sidebar.selectbox("Select Year", years, index=len(years)-1, key="sel_year")
 
 df_year = df[df["Year"] == selected_year].copy()
 all_countries = sorted(df_year["Country"].dropna().unique())
@@ -831,17 +847,29 @@ if not st.session_state.selected_countries_state:
 
 MAX_COMPARE_COUNTRIES = 8
 
+if st.session_state.get("_bulk_select_all"):
+    st.session_state.selected_countries_state = all_countries[:MAX_COMPARE_COUNTRIES]
+    for c in all_countries:
+        st.session_state[f"country_chk_{c}"] = c in st.session_state.selected_countries_state
+    st.session_state._bulk_select_all = False
+
+if st.session_state.get("_bulk_clear_all"):
+    st.session_state.selected_countries_state = []
+    for c in all_countries:
+        st.session_state[f"country_chk_{c}"] = False
+    st.session_state._bulk_clear_all = False
+
 with st.sidebar.popover("Select the countries to compare", use_container_width=True):
     st.caption(f"Select up to {MAX_COMPARE_COUNTRIES} countries to compare.")
 
     pop_c1, pop_c2 = st.columns(2)
     with pop_c1:
         if st.button("Select all", use_container_width=True, key="sel_all"):
-            st.session_state.selected_countries_state = all_countries[:MAX_COMPARE_COUNTRIES]
+            st.session_state._bulk_select_all = True
             st.rerun()
     with pop_c2:
         if st.button("Clear all", use_container_width=True, key="clr_all"):
-            st.session_state.selected_countries_state = []
+            st.session_state._bulk_clear_all = True
             st.rerun()
 
     country_search = st.text_input(
@@ -891,19 +919,20 @@ selected_index = st.sidebar.selectbox(
     INDICES,
     index=0,
     format_func=ui_label,
-    help=INDEX_DESCRIPTIONS.get(INDICES[0], "")
+    help=INDEX_DESCRIPTIONS.get(INDICES[0], ""),
+    key="sel_index"
 )
 
 st.sidebar.caption(f"*{direction_arrow(selected_index)}*")
 
-top_n = st.sidebar.slider("Top N countries", 5, min(40, len(df_year)), 15)
+top_n = st.sidebar.slider("Top N countries", 5, min(40, len(df_year)), 15, key="sel_topn")
 
-show_bottom = st.sidebar.checkbox("Show Bottom 10 panel", value=True)
+show_bottom = st.sidebar.checkbox("Show Bottom 10 panel", value=True, key="sel_bottom")
 
 # ── Reset Filters ────────────────────────────────────────────
 st.sidebar.markdown("<br>", unsafe_allow_html=True)
 if st.sidebar.button("Reset all filters", use_container_width=True):
-    st.session_state.selected_countries_state = default_countries.copy()
+    st.session_state._bulk_reset = True
     st.rerun()
 
 # ── Page Guide ────────────────────────────────────────────────
